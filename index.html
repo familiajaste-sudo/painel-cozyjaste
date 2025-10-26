@@ -1,188 +1,365 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Painel Familiar Cozyla</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Painel Cozyla — Família Jaste</title>
 
-  <!-- Estilo Cozyla -->
-  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.css" rel="stylesheet" />
-  <style>
-    body {
-      font-family: "Segoe UI", Roboto, Arial, sans-serif;
-      background: linear-gradient(135deg, #eef2f3, #dfe6e9);
-      color: #222;
-      margin: 0;
-      padding: 0;
-    }
+<!-- FullCalendar -->
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.js"></script>
 
-    header {
-      background-color: #fbbc05;
-      padding: 15px;
-      text-align: center;
-      font-size: 1.6em;
-      font-weight: bold;
-      color: #333;
-    }
+<!-- Fonts (fallback simple) -->
+<style>
+  :root{
+    --accent: #4f46e5;
+    --muted: #6b7280;
+    --bg-light: linear-gradient(180deg,#f7fafc,#eef2ff);
+    --card: #ffffff;
+    --text: #0b1220;
+    --glass: rgba(255,255,255,0.7);
+  }
+  [data-theme="dark"]{
+    --accent:#6366f1;
+    --muted:#9ca3af;
+    --bg-light: linear-gradient(180deg,#071025,#0b1220);
+    --card: rgba(255,255,255,0.03);
+    --text:#e6eef8;
+    --glass: rgba(255,255,255,0.03);
+  }
 
-    .container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      padding: 20px;
-    }
+  html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial,sans-serif;background:var(--bg-light);color:var(--text)}
+  .frame{max-width:1200px;margin:18px auto;padding:16px;display:flex;flex-direction:column;gap:14px}
+  header{display:flex;align-items:center;justify-content:space-between;background:var(--accent);color:#fff;padding:12px;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,0.08)}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{width:44px;height:44px;border-radius:8px;background:linear-gradient(135deg,#ff9966,#ff5e62);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
+  header h1{font-size:18px;margin:0}
+  header .meta{display:flex;gap:12px;align-items:center}
+  .clock{font-weight:700;font-size:16px}
 
-    section {
-      background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      padding: 20px;
-    }
+  .grid{display:grid;grid-template-columns:2fr 1fr;gap:14px}
+  .card{background:var(--card);border-radius:12px;padding:12px;box-shadow:0 6px 18px rgba(2,6,23,0.06)}
+  .card h2{margin:0 0 8px 0;font-size:16px}
+  /* calendar area */
+  #calendar{min-height:520px;border-radius:8px;overflow:hidden}
+  /* right column widgets */
+  .stack{display:flex;flex-direction:column;gap:12px}
+  .weather-box{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .temp{font-size:32px;font-weight:800;color:var(--accent)}
+  .small{font-size:13px;color:var(--muted)}
+  /* tasks */
+  .tasks{display:flex;flex-direction:column;gap:8px}
+  .task{display:flex;align-items:center;gap:8px;padding:8px;border-radius:8px;background:var(--glass)}
+  .task input[type="checkbox"]{width:18px;height:18px}
+  .task .txt{flex:1}
+  .task.done .txt{opacity:0.5;text-decoration:line-through}
+  .inline{display:flex;gap:8px;align-items:center}
 
-    h2 {
-      font-size: 1.4em;
-      margin-top: 0;
-      border-bottom: 2px solid #fbbc05;
-      padding-bottom: 8px;
-    }
-
-    #calendar {
-      margin-top: 15px;
-    }
-
-    footer {
-      text-align: center;
-      padding: 15px;
-      background: #f1f1f1;
-      color: #666;
-    }
-
-    button {
-      background: #fbbc05;
-      color: #222;
-      border: none;
-      border-radius: 8px;
-      padding: 10px 16px;
-      font-size: 15px;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    button:hover {
-      background: #ffcd35;
-    }
-
-    #weather {
-      font-size: 1.1em;
-      line-height: 1.5em;
-    }
-  </style>
+  footer{margin-top:6px;text-align:center;color:var(--muted);font-size:13px}
+  .controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+  button.btn{background:var(--accent);color:#fff;border:0;padding:8px 12px;border-radius:8px;cursor:pointer}
+  button.ghost{background:transparent;border:1px solid rgba(0,0,0,0.06);color:var(--text)}
+  input,select{padding:8px;border-radius:8px;border:1px solid #e6e9ef}
+  @media(max-width:1000px){.grid{grid-template-columns:1fr} #calendar{min-height:420px}}
+</style>
 </head>
+<body data-theme="light">
+  <div class="frame">
+    <header>
+      <div class="brand">
+        <div class="logo">FJ</div>
+        <div>
+          <h1>Painel Cozyla — Família Jaste</h1>
+          <div class="small">Belém do Pará · Painel familiar</div>
+        </div>
+      </div>
 
-<body>
-  <header>Painel Familiar Cozyla</header>
+      <div class="meta">
+        <div class="clock" id="clock">--:--</div>
+        <button class="btn" id="themeToggle">Tema: Claro</button>
+      </div>
+    </header>
 
-  <div class="container">
-    <section>
-      <h2>☀️ Clima — Belém do Pará</h2>
-      <div id="weather">Carregando clima...</div>
-    </section>
+    <div class="grid">
+      <!-- left: calendar -->
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <h2>Calendário (local)</h2>
+          <div class="small">Eventos locais — privado</div>
+        </div>
 
-    <section>
-      <h2>📅 Agenda Familiar</h2>
-      <div id="calendar">Carregando calendário...</div>
-    </section>
+        <div class="controls" style="margin-top:8px">
+          <input id="evTitle" placeholder="Título do evento" />
+          <input id="evDate" type="date" />
+          <input id="evTime" type="time" />
+          <button class="btn" id="addEvent">Adicionar</button>
+          <button class="ghost" id="clearEvents">Limpar</button>
+        </div>
+
+        <div id="calendar"></div>
+      </div>
+
+      <!-- right: weather + tasks -->
+      <aside class="stack">
+        <div class="card">
+          <h2>Clima — Belém do Pará</h2>
+          <div class="weather-box">
+            <div>
+              <div id="cityName" style="font-weight:700">Belém, PA</div>
+              <div id="weatherDesc" class="small">—</div>
+            </div>
+            <div style="text-align:right">
+              <div class="temp" id="tempVal">--°C</div>
+              <div class="small" id="feels">—</div>
+            </div>
+          </div>
+
+          <div style="margin-top:10px" id="forecast" class="small"></div>
+        </div>
+
+        <div class="card">
+          <h2>Tarefas Familiares</h2>
+
+          <div class="controls">
+            <input id="taskInput" placeholder="Nova tarefa (ex: Lavar a louça)" />
+            <button class="btn" id="addTask">Adicionar</button>
+          </div>
+
+          <div id="tasksList" class="tasks"></div>
+
+          <div style="margin-top:10px" class="small">
+            Tarefas são salvas neste navegador. Para usar em outro dispositivo, exporte/importe (botões abaixo).
+          </div>
+
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <button class="ghost" id="exportTasks">Exportar</button>
+            <button class="ghost" id="importTasks">Importar</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <footer>Desenvolvido por Cozyla © 2025</footer>
   </div>
 
-  <footer>Desenvolvido por Cozyla © 2025</footer>
+<script>
+/* =======================
+   Configurações (já usando sua chave)
+   ======================= */
+const OPENWEATHER_API_KEY = "bed39eecfc308f209f24c123e9d963d7";
+const CITY = "Belem,BR";
+const CITY_COORDS = { lat: -1.455833, lon: -48.504444 };
 
-   <!-- Dependências externas -->
-   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.js"></script>
-  <script src="https://apis.google.com/js/api.js" async defer></script>
+/* ========== Clock & Theme ========== */
+const clockEl = document.getElementById('clock');
+function updateClock(){
+  const now = new Date();
+  const hh = String(now.getHours()).padStart(2,'0');
+  const mm = String(now.getMinutes()).padStart(2,'0');
+  clockEl.textContent = hh + ':' + mm;
+}
+setInterval(updateClock,1000); updateClock();
 
-  <script>
-  const CLIENT_ID = "318293822293-lun70v10qr1dpll4ntaau8hgp1bldaql.apps.googleusercontent.com";
-  const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
-  const SCOPES = "https://www.googleapis.com/auth/calendar.readonly";
-  const OPENWEATHER_API_KEY = "bed39eecfc308f209f24c123e9d963d7";
-  const CITY_COORDS = { lat: -1.455833, lon: -48.504444 }; // Belém
+const themeToggle = document.getElementById('themeToggle');
+themeToggle.addEventListener('click', ()=>{
+  const body = document.body;
+  const isDark = body.getAttribute('data-theme') === 'dark';
+  body.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  themeToggle.textContent = 'Tema: ' + (isDark ? 'Claro' : 'Escuro');
+  localStorage.setItem('cozyla_theme', isDark ? 'light' : 'dark');
+});
+// restore theme
+const savedTheme = localStorage.getItem('cozyla_theme') || 'light';
+document.body.setAttribute('data-theme', savedTheme);
+themeToggle.textContent = 'Tema: ' + (savedTheme === 'light' ? 'Claro' : 'Escuro');
 
-  async function initClient() {
-    try {
-      await gapi.client.init({
-        clientId: CLIENT_ID,
-        discoveryDocs: DISCOVERY_DOCS,
-        scope: SCOPES,
-      });
+/* ========== FullCalendar setup ========== */
+const calendarEl = document.getElementById('calendar');
+const calendar = new FullCalendar.Calendar(calendarEl, {
+  initialView: 'dayGridMonth',
+  headerToolbar: { left:'prev,next today', center:'title', right:'dayGridMonth,timeGridWeek,timeGridDay' },
+  height: 600,
+  events: []
+});
+calendar.render();
 
-      const auth = gapi.auth2.getAuthInstance();
-      auth.isSignedIn.listen(updateSigninStatus);
-      updateSigninStatus(auth.isSignedIn.get());
-    } catch (err) {
-      console.error("Erro ao inicializar gapi:", err);
-      document.getElementById("calendar").innerHTML = "<p style='color:red;'>Falha ao carregar Google API.</p>";
-    }
-  }
+/* ========== Local Events (localStorage) ========== */
+const EVENTS_KEY = 'cozyla_events_v1';
 
-  function updateSigninStatus(isSignedIn) {
-    const el = document.getElementById("calendar");
-    if (isSignedIn) listEvents();
-    else {
-      el.innerHTML = `<button id="authorize_button">🔑 Conectar Google Calendar</button>`;
-      document.getElementById("authorize_button").onclick = () => gapi.auth2.getAuthInstance().signIn();
-    }
-  }
+function loadEventsFromStorage(){
+  try{
+    const raw = localStorage.getItem(EVENTS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  }catch(e){return []}
+}
+function saveEventsToStorage(arr){
+  localStorage.setItem(EVENTS_KEY, JSON.stringify(arr));
+}
+function refreshCalendarFromStorage(){
+  const evts = loadEventsFromStorage();
+  calendar.removeAllEvents();
+  calendar.addEventSource(evts);
+}
+refreshCalendarFromStorage();
 
-  async function listEvents() {
-    const el = document.getElementById("calendar");
-    el.innerHTML = "Carregando eventos...";
-    const res = await gapi.client.calendar.events.list({
-      calendarId: "primary",
-      timeMin: new Date().toISOString(),
-      singleEvents: true,
-      maxResults: 20,
-      orderBy: "startTime",
-    });
-    const events = res.result.items;
-    const calendar = new FullCalendar.Calendar(el, {
-      initialView: "dayGridMonth",
-      height: 600,
-      events: events.map(ev => ({
-        title: ev.summary || "(sem título)",
-        start: ev.start.dateTime || ev.start.date,
-      })),
-    });
-    calendar.render();
-  }
+/* Add event UI */
+document.getElementById('addEvent').addEventListener('click', ()=>{
+  const title = document.getElementById('evTitle').value.trim();
+  const date = document.getElementById('evDate').value;
+  const time = document.getElementById('evTime').value;
+  if(!title || !date) return alert('Preencha título e data.');
+  let start = date;
+  if(time) start = date + 'T' + time;
+  const ev = { title, start };
+  const arr = loadEventsFromStorage();
+  arr.push(ev);
+  saveEventsToStorage(arr);
+  refreshCalendarFromStorage();
+  document.getElementById('evTitle').value = '';
+  document.getElementById('evDate').value = '';
+  document.getElementById('evTime').value = '';
+});
 
-  async function loadWeather() {
-    try {
-      const res = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?lat=${CITY_COORDS.lat}&lon=${CITY_COORDS.lon}&appid=${OPENWEATHER_API_KEY}&units=metric&lang=pt_br`
-      );
-      const data = await res.json();
-      document.getElementById("weather").innerHTML = `
-        <div><strong>${data.name}</strong><br>
-        ${data.weather[0].description}<br>
-        🌡️ ${Math.round(data.main.temp)}°C</div>`;
-    } catch {
-      document.getElementById("weather").innerHTML = "Erro ao carregar clima.";
-    }
-  }
+/* Clear events */
+document.getElementById('clearEvents').addEventListener('click', ()=>{
+  if(!confirm('Remover todos os eventos locais?')) return;
+  saveEventsToStorage([]);
+  refreshCalendarFromStorage();
+});
 
-  function startAppWhenReady() {
-    if (window.gapi && window.gapi.load) {
-      gapi.load("client:auth2", initClient);
-    } else {
-      console.log("Aguardando gapi carregar...");
-      setTimeout(startAppWhenReady, 1000);
-    }
-  }
+/* ========== Tasks (localStorage) ========== */
+const TASKS_KEY = 'cozyla_tasks_v1';
 
-  window.addEventListener("load", () => {
-    loadWeather();
-    startAppWhenReady();
+function loadTasks(){ try{ return JSON.parse(localStorage.getItem(TASKS_KEY) || '[]'); }catch(e){return []} }
+function saveTasks(list){ localStorage.setItem(TASKS_KEY, JSON.stringify(list)); }
+function renderTasks(){
+  const container = document.getElementById('tasksList');
+  container.innerHTML = '';
+  const tasks = loadTasks();
+  if(!tasks.length){ container.innerHTML = '<div class="small">Sem tarefas</div>'; return; }
+  tasks.forEach((t, idx)=>{
+    const div = document.createElement('div'); div.className = 'task' + (t.done ? ' done' : '');
+    const chk = document.createElement('input'); chk.type='checkbox'; chk.checked = !!t.done;
+    chk.addEventListener('change', ()=>{ tasks[idx].done = chk.checked; saveTasks(tasks); renderTasks(); });
+    const txt = document.createElement('div'); txt.className='txt'; txt.textContent = t.text;
+    const del = document.createElement('button'); del.className='ghost'; del.textContent='Excluir';
+    del.addEventListener('click', ()=>{ tasks.splice(idx,1); saveTasks(tasks); renderTasks(); });
+    div.appendChild(chk); div.appendChild(txt); div.appendChild(del);
+    container.appendChild(div);
   });
-  </script>
+}
+document.getElementById('addTask').addEventListener('click', ()=>{
+  const val = document.getElementById('taskInput').value.trim();
+  if(!val) return;
+  const tasks = loadTasks();
+  tasks.unshift({ text: val, done: false, created: Date.now() });
+  saveTasks(tasks);
+  document.getElementById('taskInput').value = '';
+  renderTasks();
+});
+renderTasks();
+
+/* Export / Import tasks */
+document.getElementById('exportTasks').addEventListener('click', ()=>{
+  const data = localStorage.getItem(TASKS_KEY) || '[]';
+  const blob = new Blob([data], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'cozyla-tasks.json'; a.click();
+  URL.revokeObjectURL(url);
+});
+document.getElementById('importTasks').addEventListener('click', ()=>{
+  const inp = document.createElement('input'); inp.type='file'; inp.accept='.json';
+  inp.onchange = e => {
+    const file = e.target.files[0]; if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try{
+        const parsed = JSON.parse(ev.target.result);
+        if(Array.isArray(parsed)) { saveTasks(parsed); renderTasks(); alert('Tarefas importadas.'); }
+        else alert('Arquivo inválido.');
+      }catch(err){ alert('Erro ao ler arquivo.'); }
+    };
+    reader.readAsText(file);
+  };
+  inp.click();
+});
+
+/* ========== Weather (OpenWeather) ========== */
+async function loadWeather(){
+  try{
+    const nowUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${CITY_COORDS.lat}&lon=${CITY_COORDS.lon}&appid=${OPENWEATHER_API_KEY}&units=metric&lang=pt_br`;
+    const resp = await fetch(nowUrl);
+    if(!resp.ok) throw new Error('erro clima');
+    const j = await resp.json();
+    document.getElementById('cityName').textContent = j.name;
+    document.getElementById('weatherDesc').textContent = j.weather[0].description;
+    document.getElementById('tempVal').textContent = Math.round(j.main.temp) + '°C';
+    document.getElementById('feels').textContent = 'Sensação: ' + Math.round(j.main.feels_like) + '°C';
+  }catch(e){
+    document.getElementById('weatherDesc').textContent = 'Erro ao carregar clima';
+  }
+
+  // Forecast (3 dias) - usando forecast 5 dias/3h e pegando por dia
+  try{
+    const urlF = `https://api.openweathermap.org/data/2.5/forecast?lat=${CITY_COORDS.lat}&lon=${CITY_COORDS.lon}&appid=${OPENWEATHER_API_KEY}&units=metric&lang=pt_br`;
+    const r = await fetch(urlF); if(!r.ok) throw new Error('err forecast');
+    const data = await r.json();
+    const slots = data.list || [];
+    const days = {};
+    slots.forEach(item=>{
+      const dt = new Date(item.dt * 1000);
+      const day = dt.toLocaleDateString('pt-BR',{weekday:'short', day:'2-digit', month:'2-digit'});
+      const hour = dt.getHours();
+      const diff = Math.abs(hour - 12);
+      if(!days[day] || diff < days[day].diff) days[day] = { item, diff };
+    });
+    const keys = Object.keys(days).slice(1,4); // próximos 3 dias (ignora hoje)
+    const fc = document.getElementById('forecast'); fc.innerHTML = '';
+    keys.forEach(k=>{
+      const it = days[k].item;
+      const icon = it.weather[0].icon;
+      const min = Math.round(it.main.temp_min);
+      const max = Math.round(it.main.temp_max);
+      const div = document.createElement('div');
+      div.style.display='inline-block'; div.style.marginRight='10px'; div.style.textAlign='center';
+      div.innerHTML = `<div style="font-weight:700">${k}</div><img src="https://openweathermap.org/img/wn/${icon}.png" alt=""><div class="small">${min}° / ${max}°C</div>`;
+      fc.appendChild(div);
+    });
+  }catch(e){
+    // nada
+  }
+}
+loadWeather();
+
+/* ========== keep calendar & tasks in sync option ===========
+   optional: let user add a task to calendar as all-day event
+   (kept local only) */
+calendar.setOption('dateClick', function(info){
+  const title = prompt('Adicionar evento para ' + info.dateStr + ' — título:');
+  if(title){
+    const ev = { title, start: info.dateStr, allDay:true };
+    const arr = loadEventsFromStorage();
+    arr.push(ev);
+    saveEventsToStorage(arr);
+    refreshCalendarFromStorage();
+  }
+});
+
+/* small helpers */
+function loadEventsFromStorage(){ try{ return JSON.parse(localStorage.getItem(EVENTS_KEY) || '[]'); }catch(e){return []} }
+function saveEventsToStorage(arr){ localStorage.setItem(EVENTS_KEY, JSON.stringify(arr)); }
+
+/* initialize sample data if empty (optional) */
+if(!localStorage.getItem(EVENTS_KEY)){
+  const sample = [
+    { title: "Reunião família", start: new Date().toISOString().slice(0,10) },
+    { title: "Aula do Pedro", start: new Date(Date.now()+86400000).toISOString().slice(0,10) }
+  ];
+  saveEventsToStorage(sample);
+  refreshCalendarFromStorage();
+}
+
+/* done */
+</script>
 </body>
 </html>
