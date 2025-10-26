@@ -84,191 +84,96 @@
       </div>
     </div>
 
-    <footer>Desenvolvido por Cozyla © 2025</footer>
+   <footer>Desenvolvido por Cozyla © 2025</footer>
 </div>
 
 <!-- FULLCALENDAR -->
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.js"></script>
 
-<!-- gapi -->
+<!-- GOOGLE API -->
 <script src="https://apis.google.com/js/api.js"></script>
 
 <script>
 /**********************************************
- * CONFIGURAÇÕES (substitua se necessário)
+ * CONFIGURAÇÕES
  **********************************************/
-const CLIENT_ID = "318293822293-lun70v10qr1dpll4ntaau8hgp1bldaql.apps.googleusercontent.com";    
-const API_KEY = ""; // opcional
+const CLIENT_ID = "318293822293-lun70v10qr1dpll4ntaau8hgp1bldaql.apps.googleusercontent.com";
 const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
-const SCOPES = "https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/calendar.events.readonly";
+const SCOPES = "https://www.googleapis.com/auth/calendar.readonly";
 const OPENWEATHER_API_KEY = "bed39eecfc308f209f24c123e9d963d7";
 const CITY_COORDS = { lat: -1.455833, lon: -48.504444 }; // Belém
-/**********************************************/
 
-  // UI
-  const signinBtn = document.getElementById('signinBtn');
-  const signoutBtn = document.getElementById('signoutBtn');
-  const signedAs = document.getElementById('signedAs');
-  const calendarSelect = document.getElementById('calendarSelect');
-  const refreshCal = document.getElementById('refreshCal');
+/**********************************************
+ * INICIALIZAÇÃO GOOGLE CALENDAR
+ **********************************************/
+function handleClientLoad() {
+  gapi.load("client:auth2", initClient);
+}
 
-  // FullCalendar
-  const calendarEl = document.getElementById('calendar');
-  const fc = new FullCalendar.Calendar(calendarEl, {
-    initialView: 'dayGridMonth',
-    headerToolbar: {
-      left: 'prev,next today',
-      center: 'title',
-      right: 'dayGridMonth,timeGridWeek,timeGridDay'
-    },
-    nowIndicator: true,
-    events: []
-  });
-  fc.render();
-
-  // Map (Leaflet)
-  const map = L.map('map', { scrollWheelZoom: false }).setView([CITY_COORDS.lat, CITY_COORDS.lon], 12);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors' }).addTo(map);
-  L.marker([CITY_COORDS.lat, CITY_COORDS.lon]).addTo(map).bindPopup('Belém - PA').openPopup();
-
-  // OpenWeather
-  async function loadWeather() {
-    try {
-      const url = `https://api.openweathermap.org/data/2.5/weather?lat=${CITY_COORDS.lat}&lon=${CITY_COORDS.lon}&units=metric&lang=pt_br&appid=${OPENWEATHER_API_KEY}`;
-      const r = await fetch(url);
-      if (!r.ok) throw new Error('Erro clima: ' + r.status);
-      const j = await r.json();
-      document.getElementById('temp').textContent = Math.round(j.main.temp) + '°C';
-      document.getElementById('desc').textContent = j.weather[0].description;
-      document.getElementById('hum').textContent = 'Umidade: ' + j.main.humidity + '%';
-    } catch (e) {
-      console.error(e);
-      document.getElementById('desc').textContent = 'Erro ao carregar clima';
-    }
-  }
-  loadWeather();
-
-  /* ---------- Google API (gapi) ---------- */
-  function handleClientLoad() {
-    gapi.load('client:auth2', initClient);
-  }
-
-  async function initClient() {
-    try {
-      await gapi.client.init({
-        apiKey: API_KEY || undefined,
-        clientId: CLIENT_ID,
-        discoveryDocs: DISCOVERY_DOCS,
-        scope: SCOPES
-      });
-
-      const auth = gapi.auth2.getAuthInstance();
-      auth.isSignedIn.listen(updateSigninStatus);
-      updateSigninStatus(auth.isSignedIn.get());
-
-      signinBtn.addEventListener('click', () => auth.signIn());
-      signoutBtn.addEventListener('click', () => auth.signOut());
-    } catch (err) {
-      console.error('initClient error', err);
-    }
-  }
-
-  async function updateSigninStatus(isSignedIn) {
-    const auth = gapi.auth2.getAuthInstance();
-    if (isSignedIn) {
-      const user = auth.currentUser.get();
-      const profile = user.getBasicProfile();
-      signedAs.textContent = profile.getEmail();
-      signinBtn.style.display = 'none';
-      signoutBtn.style.display = 'inline-block';
-      await loadCalendarList();
-      const saved = localStorage.getItem('cozyla_selected_calendar');
-      if (saved) calendarSelect.value = saved;
-      await loadEventsForSelectedCalendar();
-    } else {
-      signedAs.textContent = 'Não conectado';
-      signinBtn.style.display = 'inline-block';
-      signoutBtn.style.display = 'none';
-      fc.removeAllEvents();
-      calendarSelect.innerHTML = '<option>Conecte-se para ver calendários</option>';
-    }
-  }
-
-  async function loadCalendarList() {
-    try {
-      const res = await gapi.client.calendar.calendarList.list({ maxResults: 250 });
-      const items = res.result.items || [];
-      calendarSelect.innerHTML = '';
-      items.forEach(cal => {
-        const opt = document.createElement('option');
-        opt.value = cal.id;
-        opt.textContent = cal.summary + (cal.primary ? ' (principal)' : '');
-        calendarSelect.appendChild(opt);
-      });
-      if (!items.length) calendarSelect.innerHTML = '<option>(nenhum calendário encontrado)</option>';
-      calendarSelect.addEventListener('change', async () => {
-        localStorage.setItem('cozyla_selected_calendar', calendarSelect.value);
-        await loadEventsForSelectedCalendar();
-      });
-    } catch (e) {
-      console.error('Erro listar calendários', e);
-      calendarSelect.innerHTML = '<option>Erro ao listar calendários</option>';
-    }
-  }
-
-  async function loadEventsForSelectedCalendar() {
-    const calId = calendarSelect.value;
-    if (!calId) return;
-    fc.removeAllEvents();
-    fc.addEvent({ title: 'Carregando...', start: new Date() });
-
-    try {
-      const now = new Date();
-      const timeMin = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-      const timeMax = new Date(now.getFullYear(), now.getMonth() + 2, 0).toISOString();
-
-      const res = await gapi.client.calendar.events.list({
-        calendarId: calId,
-        singleEvents: true,
-        orderBy: 'startTime',
-        timeMin,
-        timeMax,
-        maxResults: 250
-      });
-
-      const items = res.result.items || [];
-      fc.removeAllEvents();
-
-      const fcEvents = items.map(ev => {
-        const start = ev.start.dateTime || ev.start.date;
-        const end = ev.end ? (ev.end.dateTime || ev.end.date) : null;
-        return {
-          id: ev.id,
-          title: ev.summary || '(Sem título)',
-          start,
-          end,
-          allDay: !!ev.start.date && !ev.start.dateTime,
-          extendedProps: { location: ev.location || '', description: ev.description || '' }
-        };
-      });
-
-      fc.addEventSource(fcEvents);
-    } catch (e) {
-      console.error('Erro buscar eventos', e);
-      fc.removeAllEvents();
-      fc.addEvent({ title: 'Erro ao carregar eventos', start: new Date() });
-    }
-  }
-
-  // refresh button
-  refreshCal.addEventListener('click', async () => {
-    await loadCalendarList();
-    await loadEventsForSelectedCalendar();
+async function initClient() {
+  await gapi.client.init({
+    clientId: CLIENT_ID,
+    discoveryDocs: DISCOVERY_DOCS,
+    scope: SCOPES,
   });
 
-  // carrega gapi no final
-  handleClientLoad();
-  </script>
+  const authInstance = gapi.auth2.getAuthInstance();
+  authInstance.isSignedIn.listen(updateSigninStatus);
+  updateSigninStatus(authInstance.isSignedIn.get());
+}
+
+function updateSigninStatus(isSignedIn) {
+  if (isSignedIn) {
+    listUpcomingEvents();
+  } else {
+    document.getElementById("calendar").innerHTML = '<button id="authorize_button">Conectar Google Calendar</button>';
+    document.getElementById("authorize_button").onclick = () => gapi.auth2.getAuthInstance().signIn();
+  }
+}
+
+async function listUpcomingEvents() {
+  const response = await gapi.client.calendar.events.list({
+    calendarId: "primary",
+    timeMin: new Date().toISOString(),
+    showDeleted: false,
+    singleEvents: true,
+    maxResults: 10,
+    orderBy: "startTime",
+  });
+
+  const events = response.result.items;
+  const calendarEl = document.getElementById("calendar");
+
+  const calendar = new FullCalendar.Calendar(calendarEl, {
+    initialView: "dayGridMonth",
+    events: events.map(ev => ({
+      title: ev.summary,
+      start: ev.start.dateTime || ev.start.date,
+      end: ev.end?.dateTime || ev.end?.date,
+    })),
+  });
+  calendar.render();
+}
+
+handleClientLoad();
+
+/**********************************************
+ * CLIMA (OPENWEATHER)
+ **********************************************/
+async function loadWeather() {
+  const res = await fetch(
+    `https://api.openweathermap.org/data/2.5/weather?lat=${CITY_COORDS.lat}&lon=${CITY_COORDS.lon}&appid=${OPENWEATHER_API_KEY}&units=metric&lang=pt_br`
+  );
+  const data = await res.json();
+  document.getElementById("weather").innerHTML = `
+    <div>
+      <h3>${data.name}</h3>
+      <p>${data.weather[0].description}</p>
+      <p>${Math.round(data.main.temp)}°C</p>
+    </div>`;
+}
+loadWeather();
+</script>
 </body>
 </html>
