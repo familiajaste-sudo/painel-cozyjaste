@@ -1,179 +1,202 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Painel Cozyla — Calendário OAuth • Clima & Mapa</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel Familiar Cozyla</title>
 
-  <!-- FullCalendar -->
-  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js"></script>
-
-  <!-- Leaflet (OpenStreetMap) -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
+  <!-- Estilo Cozyla -->
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.css" rel="stylesheet" />
   <style>
-    :root { --accent:#4f46e5; --muted:#6b7280; --bg:#f6f8fb }
-    *{box-sizing:border-box}
-    body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial;margin:0;background:var(--bg);color:#071022}
-    .container{max-width:1200px;margin:18px auto;padding:18px}
-    header{display:flex;align-items:center;justify-content:space-between;background:linear-gradient(90deg,var(--accent),#6366f1);color:#fff;padding:12px;border-radius:10px}
-    header h1{font-size:18px;margin:0}
-    .main{display:grid;grid-template-columns:1fr 380px;gap:16px;margin-top:16px}
-    .card{background:#fff;padding:12px;border-radius:10px;box-shadow:0 6px 18px rgba(20,30,60,0.03)}
-    #calendar { max-width:100%; min-height:520px; border-radius:8px; overflow:hidden }
-    #map{height:300px;border-radius:8px}
-    .controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
-    .btn{padding:8px 10px;border-radius:8px;border:0;background:var(--accent);color:#fff;cursor:pointer}
-    .btn.secondary{background:#10b981}
-    select{padding:8px;border-radius:8px;border:1px solid #e6e9ef}
-    .small{font-size:13px;color:var(--muted)}
-    footer{margin-top:12px;text-align:center;color:var(--muted)}
-    @media(max-width:1000px){ .main{grid-template-columns:1fr} #calendar {min-height:420px} #map{height:220px} }
-    /* Cozyla-ish small touches */
-    .brand {display:flex;align-items:center;gap:12px}
-    .logo{width:44px;height:44px;border-radius:8px;background:linear-gradient(135deg,#ff9966,#ff5e62);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
+    body {
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background: linear-gradient(135deg, #eef2f3, #dfe6e9);
+      color: #222;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #fbbc05;
+      padding: 15px;
+      text-align: center;
+      font-size: 1.6em;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      padding: 20px;
+    }
+
+    section {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 20px;
+    }
+
+    h2 {
+      font-size: 1.4em;
+      margin-top: 0;
+      border-bottom: 2px solid #fbbc05;
+      padding-bottom: 8px;
+    }
+
+    #calendar {
+      margin-top: 15px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      background: #f1f1f1;
+      color: #666;
+    }
+
+    button {
+      background: #fbbc05;
+      color: #222;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 15px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #ffcd35;
+    }
+
+    #weather {
+      font-size: 1.1em;
+      line-height: 1.5em;
+    }
   </style>
 </head>
+
 <body>
+  <header>Painel Familiar Cozyla</header>
+
   <div class="container">
-    <header>
-      <div class="brand">
-        <div class="logo">FJ</div>
-        <div>
-          <h1>Painel Cozyla — Família Jaste</h1>
-          <div class="small">Belém, PA · Integrado</div>
-        </div>
-      </div>
+    <section>
+      <h2>☀️ Clima — Belém do Pará</h2>
+      <div id="weather">Carregando clima...</div>
+    </section>
 
-      <div style="display:flex;gap:12px;align-items:center">
-        <div class="small" id="signedAs">Não conectado</div>
-        <button id="signinBtn" class="btn">Conectar com Google</button>
-        <button id="signoutBtn" class="btn" style="background:#ef4444;display:none">Sair</button>
-      </div>
-    </header>
+    <section>
+      <h2>📅 Agenda Familiar</h2>
+      <div id="calendar">Carregando calendário...</div>
+    </section>
+  </div>
 
-    <div class="main">
-      <!-- coluna esquerda: calendário -->
-      <div class="card">
-        <div class="controls">
-          <label class="small">Calendário:</label>
-          <select id="calendarSelect"><option>Conecte-se para listar</option></select>
-          <button id="refreshCal" class="btn secondary">Atualizar</button>
-        </div>
+  <footer>Desenvolvido por Cozyla © 2025</footer>
 
-        <div id="calendar"></div>
-      </div>
+  <!-- Dependências externas -->
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.js"></script>
+  <script async defer src="https://apis.google.com/js/api.js"
+    onload="gapiLoaded()"
+    onerror="console.error('Erro ao carregar API Google');"></script>
 
-      <!-- coluna direita: mapa + clima -->
-      <div style="display:flex;flex-direction:column;gap:12px">
-        <div class="card">
-          <div style="font-weight:700">Mapa</div>
-          <div id="map" style="margin-top:8px"></div>
-        </div>
+  <script>
+  /**********************************************
+   * CONFIGURAÇÕES
+   **********************************************/
+  const CLIENT_ID = "318293822293-lun70v10qr1dpll4ntaau8hgp1bldaql.apps.googleusercontent.com";
+  const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
+  const SCOPES = "https://www.googleapis.com/auth/calendar.readonly";
+  const OPENWEATHER_API_KEY = "bed39eecfc308f209f24c123e9d963d7";
+  const CITY_COORDS = { lat: -1.455833, lon: -48.504444 }; // Belém
 
-        <div class="card">
-          <div style="font-weight:700">Clima — Belém (OpenWeatherMap)</div>
-          <div id="weatherBox" style="margin-top:8px">
-            <div id="temp" style="font-size:28px;font-weight:800">--°C</div>
-            <div id="desc" class="small">—</div>
-            <div id="hum" class="small">—</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-   <footer>Desenvolvido por Cozyla © 2025</footer>
-</div>
-
-<!-- FULLCALENDAR -->
-<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.js"></script>
-
-<!-- GOOGLE API -->
-<script src="https://apis.google.com/js/api.js"></script>
-
-<script>
-/**********************************************
- * CONFIGURAÇÕES
- **********************************************/
-const CLIENT_ID = "318293822293-lun70v10qr1dpll4ntaau8hgp1bldaql.apps.googleusercontent.com";
-const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
-const SCOPES = "https://www.googleapis.com/auth/calendar.readonly";
-const OPENWEATHER_API_KEY = "bed39eecfc308f209f24c123e9d963d7";
-const CITY_COORDS = { lat: -1.455833, lon: -48.504444 }; // Belém
-
-/**********************************************
- * INICIALIZAÇÃO GOOGLE CALENDAR
- **********************************************/
-function handleClientLoad() {
-  gapi.load("client:auth2", initClient);
-}
-
-async function initClient() {
-  await gapi.client.init({
-    clientId: CLIENT_ID,
-    discoveryDocs: DISCOVERY_DOCS,
-    scope: SCOPES,
-  });
-
-  const authInstance = gapi.auth2.getAuthInstance();
-  authInstance.isSignedIn.listen(updateSigninStatus);
-  updateSigninStatus(authInstance.isSignedIn.get());
-}
-
-function updateSigninStatus(isSignedIn) {
-  if (isSignedIn) {
-    listUpcomingEvents();
-  } else {
-    document.getElementById("calendar").innerHTML = '<button id="authorize_button">Conectar Google Calendar</button>';
-    document.getElementById("authorize_button").onclick = () => gapi.auth2.getAuthInstance().signIn();
+  /**********************************************
+   * GOOGLE CALENDAR
+   **********************************************/
+  function gapiLoaded() {
+    gapi.load("client:auth2", initClient);
   }
-}
 
-async function listUpcomingEvents() {
-  const response = await gapi.client.calendar.events.list({
-    calendarId: "primary",
-    timeMin: new Date().toISOString(),
-    showDeleted: false,
-    singleEvents: true,
-    maxResults: 10,
-    orderBy: "startTime",
-  });
+  async function initClient() {
+    await gapi.client.init({
+      clientId: CLIENT_ID,
+      discoveryDocs: DISCOVERY_DOCS,
+      scope: SCOPES,
+    });
 
-  const events = response.result.items;
-  const calendarEl = document.getElementById("calendar");
+    const auth = gapi.auth2.getAuthInstance();
+    auth.isSignedIn.listen(updateSigninStatus);
+    updateSigninStatus(auth.isSignedIn.get());
+  }
 
-  const calendar = new FullCalendar.Calendar(calendarEl, {
-    initialView: "dayGridMonth",
-    events: events.map(ev => ({
-      title: ev.summary,
-      start: ev.start.dateTime || ev.start.date,
-      end: ev.end?.dateTime || ev.end?.date,
-    })),
-  });
-  calendar.render();
-}
+  function updateSigninStatus(isSignedIn) {
+    if (isSignedIn) {
+      listEvents();
+    } else {
+      const el = document.getElementById("calendar");
+      el.innerHTML = `<button id="authorize_button">🔑 Conectar Google Calendar</button>`;
+      document.getElementById("authorize_button").onclick = () => gapi.auth2.getAuthInstance().signIn();
+    }
+  }
 
-handleClientLoad();
+  async function listEvents() {
+    const el = document.getElementById("calendar");
+    el.innerHTML = "Carregando eventos...";
 
-/**********************************************
- * CLIMA (OPENWEATHER)
- **********************************************/
-async function loadWeather() {
-  const res = await fetch(
-    `https://api.openweathermap.org/data/2.5/weather?lat=${CITY_COORDS.lat}&lon=${CITY_COORDS.lon}&appid=${OPENWEATHER_API_KEY}&units=metric&lang=pt_br`
-  );
-  const data = await res.json();
-  document.getElementById("weather").innerHTML = `
-    <div>
-      <h3>${data.name}</h3>
-      <p>${data.weather[0].description}</p>
-      <p>${Math.round(data.main.temp)}°C</p>
-    </div>`;
-}
-loadWeather();
-</script>
+    try {
+      const res = await gapi.client.calendar.events.list({
+        calendarId: "primary",
+        timeMin: new Date().toISOString(),
+        showDeleted: false,
+        singleEvents: true,
+        maxResults: 20,
+        orderBy: "startTime",
+      });
+
+      const events = res.result.items;
+      const calendar = new FullCalendar.Calendar(el, {
+        initialView: "dayGridMonth",
+        height: 600,
+        headerToolbar: {
+          left: "prev,next today",
+          center: "title",
+          right: "dayGridMonth,timeGridWeek,listWeek",
+        },
+        events: events.map(ev => ({
+          title: ev.summary || "(sem título)",
+          start: ev.start.dateTime || ev.start.date,
+          end: ev.end?.dateTime || ev.end?.date,
+        })),
+      });
+      calendar.render();
+    } catch (err) {
+      el.innerHTML = "<p style='color:red;'>Erro ao carregar eventos.</p>";
+      console.error(err);
+    }
+  }
+
+  /**********************************************
+   * CLIMA (OpenWeather)
+   **********************************************/
+  async function loadWeather() {
+    try {
+      const res = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?lat=${CITY_COORDS.lat}&lon=${CITY_COORDS.lon}&appid=${OPENWEATHER_API_KEY}&units=metric&lang=pt_br`
+      );
+      const data = await res.json();
+      document.getElementById("weather").innerHTML = `
+        <div>
+          <strong>${data.name}</strong><br>
+          ${data.weather[0].description}<br>
+          🌡️ ${Math.round(data.main.temp)}°C
+        </div>`;
+    } catch (e) {
+      document.getElementById("weather").innerHTML = "Erro ao carregar clima.";
+    }
+  }
+  loadWeather();
+  </script>
 </body>
 </html>
