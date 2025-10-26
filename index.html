@@ -96,11 +96,9 @@
 
   <footer>Desenvolvido por Cozyla © 2025</footer>
 
-  <!-- Dependências externas -->
+   <!-- Dependências externas -->
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.js"></script>
-  <script async defer src="https://apis.google.com/js/api.js"
-    onload="gapiLoaded()"
-    onerror="console.error('Erro ao carregar API Google');"></script>
+  <script src="https://apis.google.com/js/api.js"></script>
 
   <script>
   /**********************************************
@@ -115,27 +113,32 @@
   /**********************************************
    * GOOGLE CALENDAR
    **********************************************/
-  function gapiLoaded() {
+  function startApp() {
     gapi.load("client:auth2", initClient);
   }
 
   async function initClient() {
-    await gapi.client.init({
-      clientId: CLIENT_ID,
-      discoveryDocs: DISCOVERY_DOCS,
-      scope: SCOPES,
-    });
+    try {
+      await gapi.client.init({
+        clientId: CLIENT_ID,
+        discoveryDocs: DISCOVERY_DOCS,
+        scope: SCOPES,
+      });
 
-    const auth = gapi.auth2.getAuthInstance();
-    auth.isSignedIn.listen(updateSigninStatus);
-    updateSigninStatus(auth.isSignedIn.get());
+      const auth = gapi.auth2.getAuthInstance();
+      auth.isSignedIn.listen(updateSigninStatus);
+      updateSigninStatus(auth.isSignedIn.get());
+    } catch (err) {
+      console.error("Erro ao inicializar gapi:", err);
+      document.getElementById("calendar").innerHTML = "<p style='color:red;'>Falha ao carregar Google API.</p>";
+    }
   }
 
   function updateSigninStatus(isSignedIn) {
+    const el = document.getElementById("calendar");
     if (isSignedIn) {
       listEvents();
     } else {
-      const el = document.getElementById("calendar");
       el.innerHTML = `<button id="authorize_button">🔑 Conectar Google Calendar</button>`;
       document.getElementById("authorize_button").onclick = () => gapi.auth2.getAuthInstance().signIn();
     }
@@ -196,7 +199,15 @@
       document.getElementById("weather").innerHTML = "Erro ao carregar clima.";
     }
   }
-  loadWeather();
+
+  window.addEventListener("load", () => {
+    loadWeather();
+    // Espera 1 segundo e inicializa gapi
+    setTimeout(() => {
+      if (window.gapi) startApp();
+      else console.error("Google API não carregou.");
+    }, 1000);
+  });
   </script>
 </body>
 </html>
