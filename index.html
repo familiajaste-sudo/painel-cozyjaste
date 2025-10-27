@@ -1,158 +1,321 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Painel Familia Rj</title>
-  <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Skylight Familiar — v2 Glass</title>
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Poppins", sans-serif; }
-    body {
-      background: linear-gradient(135deg, #101820, #1b2735);
-      color: #fff;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      padding: 2rem;
+    :root{
+      --bg-1: linear-gradient(180deg,#0f1724 0%, #071426 100%);
+      --glass: rgba(255,255,255,0.06);
+      --glass-2: rgba(255,255,255,0.04);
+      --card-radius: 18px;
+      --accent: linear-gradient(90deg,#7c3aed,#06b6d4);
+      --muted: #9aa4b2;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, Poppins, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      background: var(--bg-1);
+      color:#e6eef6;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      display:flex;flex-direction:column;align-items:center;padding:28px;
     }
 
-    header {
-      width: 100%;
-      max-width: 1100px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-    }
+    /* Container */
+    .wrap{width:100%;max-width:1200px}
 
-    .datetime {
-      font-size: 1.2rem;
-      color: #ccc;
-    }
+    /* Header */
+    header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}
+    .brand{display:flex;align-items:center;gap:14px}
+    .logo{width:64px;height:64px;border-radius:14px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:20px;box-shadow:0 6px 18px rgba(124,58,237,0.18)}
+    h1{margin:0;font-size:20px}
+    .top-controls{display:flex;align-items:center;gap:10px}
+    .chip{background:var(--glass);padding:8px 12px;border-radius:999px;color:var(--muted);font-weight:600;font-size:13px}
+    .btn{background:linear-gradient(90deg,#06b6d4,#7c3aed);border:none;padding:8px 12px;border-radius:10px;color:#071426;font-weight:700;cursor:pointer}
 
-    h1 {
-      font-weight: 600;
-      letter-spacing: 1px;
-      background: linear-gradient(90deg, #00f0ff, #00ffa2);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
+    /* Dashboard grid */
+    .dashboard{display:grid;grid-template-columns:300px 1fr;gap:18px}
 
-    .panel {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
-      width: 100%;
-      max-width: 1100px;
-    }
+    /* Left column (sidebar) */
+    .left{display:flex;flex-direction:column;gap:12px}
+    .glass-card{background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));border-radius:var(--card-radius);padding:14px;backdrop-filter:blur(10px);box-shadow:0 6px 30px rgba(2,6,23,0.6)}
+    .profile{display:flex;gap:12px;align-items:center}
+    .avatar-lg{width:56px;height:56px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#071426;font-weight:800;background:linear-gradient(90deg,#ffd166,#ff9abc)}
+    .members{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+    .member-row{display:flex;align-items:center;gap:10px;padding:8px;border-radius:10px;background:rgba(255,255,255,0.02)}
 
-    .column {
-      background: rgba(255,255,255,0.1);
-      border-radius: 20px;
-      backdrop-filter: blur(10px);
-      padding: 1rem;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-      transition: transform 0.2s ease;
-    }
+    /* Right area */
+    .right{display:flex;flex-direction:column;gap:12px}
+    .panels{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .panel{padding:12px;border-radius:14px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));min-height:110px}
+    .panel h3{margin:0;font-size:14px;color:#cfe9ff}
+    .events{margin-top:8px;display:flex;flex-direction:column;gap:8px}
+    .event{display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:10px;background:rgba(255,255,255,0.02)}
+    .event .left{display:flex;gap:8px;align-items:center}
+    .event .time{font-size:13px;color:var(--muted)}
 
-    .column:hover {
-      transform: translateY(-5px);
-    }
+    /* columns by person */
+    .people{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px}
+    .person-card{padding:14px;border-radius:14px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);min-height:180px;display:flex;flex-direction:column}
+    .person-title{display:flex;align-items:center;gap:10px}
+    .person-title .dot{width:12px;height:12px;border-radius:50%}
+    .periods{display:flex;gap:8px;margin-top:10px}
+    .period{flex:1;padding:8px;border-radius:10px;background:rgba(255,255,255,0.01);min-height:60px}
 
-    .column h2 {
-      display: flex;
-      align-items: center;
-      gap: .5rem;
-      font-size: 1.1rem;
-      margin-bottom: .5rem;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      padding-bottom: .3rem;
-    }
+    /* footer */
+    footer{margin-top:14px;color:var(--muted);font-size:13px}
 
-    .event {
-      margin: .8rem 0;
-      padding: .6rem;
-      background: rgba(255,255,255,0.08);
-      border-radius: 12px;
-      transition: background 0.2s;
-    }
+    /* responsive */
+    @media (max-width:1000px){.dashboard{grid-template-columns:1fr}.panels{grid-template-columns:repeat(2,1fr)}.people{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:600px){.panels{display:block}.people{display:block}}
 
-    .event:hover {
-      background: rgba(255,255,255,0.15);
-    }
+    /* small helpers */
+    .small{font-size:13px;color:var(--muted)}
+    .placeholder{color:var(--muted);font-size:13px}
 
-    .event-time {
-      font-size: .9rem;
-      color: #aaa;
-    }
+    /* animations */
+    .fade-in{animation:fadeIn .6s ease both}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-    .event-title {
-      font-weight: 500;
-      font-size: 1rem;
-    }
-
-    footer {
-      margin-top: 2rem;
-      color: #777;
-      font-size: .9rem;
-    }
   </style>
 </head>
 <body>
-  <header>
-    <h1><i class='bx bx-calendar-heart'></i> Painel Familiar Skylight</h1>
-    <div class="datetime" id="datetime"></div>
-  </header>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo">SF</div>
+        <div>
+          <h1>Skylight Familiar</h1>
+          <div class="small">Painel familiar — privado • glass edition</div>
+        </div>
+      </div>
 
-  <div class="panel" id="calendarPanel">
-    <div class="column"><h2><i class='bx bx-sun'></i> Hoje</h2><div class="events"></div></div>
-    <div class="column"><h2><i class='bx bx-cloud'></i> Amanhã</h2><div class="events"></div></div>
-    <div class="column"><h2><i class='bx bx-moon'></i> Depois de Amanhã</h2><div class="events"></div></div>
+      <div class="top-controls">
+        <div class="chip" id="dateTime">—</div>
+        <div class="chip" id="weatherChip">Carregando clima...</div>
+        <button class="btn" id="refreshBtn"><i class='bx bx-refresh'></i> Atualizar</button>
+      </div>
+    </header>
+
+    <div class="dashboard">
+      <div class="left">
+        <div class="glass-card profile">
+          <div class="avatar-lg" id="ownerAvatar">RJ</div>
+          <div>
+            <div style="font-weight:700">Rogério Jaste</div>
+            <div class="small">Administrador</div>
+          </div>
+        </div>
+
+        <div class="glass-card">
+          <div style="font-weight:700">Membros</div>
+          <div class="members" id="memberList">
+            <!-- built dynamically -->
+          </div>
+        </div>
+
+        <div class="glass-card">
+          <div style="font-weight:700">Ações rápidas</div>
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <button class="btn" id="addTaskBtn"><i class='bx bx-plus'></i> Nova tarefa</button>
+            <button class="btn" id="openSettings"><i class='bx bx-cog'></i> Config</button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="right">
+        <div class="panels">
+          <div class="panel fade-in">
+            <h3>Próximos eventos (3 dias)</h3>
+            <div class="events" id="eventsList">Carregando...</div>
+          </div>
+          <div class="panel fade-in">
+            <h3>Resumo rápido</h3>
+            <div class="small" id="summary">--</div>
+          </div>
+          <div class="panel fade-in">
+            <h3>Cardápio</h3>
+            <div class="small">Seg: Arroz &amp; Frango • Ter: Macarrão • Qua: Sopa</div>
+          </div>
+        </div>
+
+        <div class="people" id="peopleGrid">
+          <!-- 4 person cards -->
+        </div>
+
+      </div>
+    </div>
+
+    <footer>Skylight Familiar • v2 Glass — Privado • Feito por você</footer>
   </div>
 
-  <footer>Feito com ☕ por Rogério — Skylight Familiar 2025</footer>
+  <!-- small modal for add task -->
+  <div id="modal" style="display:none;position:fixed;inset:0;background:rgba(2,6,23,0.6);align-items:center;justify-content:center">
+    <div style="background:#071426;padding:18px;border-radius:12px;width:420px;max-width:96%">
+      <h3 style="margin-top:0;color:#e6eef6">Nova tarefa</h3>
+      <input id="tTitle" placeholder="Título" style="width:100%;padding:10px;border-radius:8px;border:none;margin-bottom:8px" />
+      <select id="tPerson" style="width:100%;padding:10px;border-radius:8px;border:none;margin-bottom:8px">
+        <option value="rogério">Rogério</option>
+        <option value="ana">Ana</option>
+        <option value="lucas">Lucas</option>
+        <option value="maria">Maria</option>
+      </select>
+      <div style="display:flex;justify-content:flex-end;gap:8px">
+        <button id="saveTask" class="btn">Salvar</button>
+        <button id="cancelTask" style="background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px;border-radius:8px;color:var(--muted)">Cancelar</button>
+      </div>
+    </div>
+  </div>
 
   <script>
-    // 🕓 Atualiza hora
-    function updateTime() {
-      const now = new Date();
-      document.getElementById('datetime').textContent =
-        now.toLocaleString('pt-BR', { dateStyle: 'full', timeStyle: 'short' });
-    }
-    setInterval(updateTime, 1000);
-    updateTime();
+  /* =========================== INSTRUÇÕES ===========================
+    1) Substitua SCRIPT_URL pelo URL do seu Google Apps Script (o endpoint /exec).
+    2) Para o clima: crie uma conta gratuita em https://openweathermap.org e cole a chave em OPENWEATHER_KEY.
+       (ou deixe vazio para ocultar o chip do clima)
+    ====================================================================*/
 
-    // 🌐 URL do seu Google Apps Script
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxLF3o5PHBKapu6UthIW8Oee-D8yLVQ58Jqi5hTloLayZS2-dAo4vx4VJaxRN3tyvg/exec";
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxLF3o5PHBKapu6UthIW8Oee-D8yLVQ58Jqi5hTloLayZS2-dAo4vx4VJaxRN3tyvg/exec"; // já preenchido por você
+  const OPENWEATHER_KEY = ""; // cole sua API key aqui (opcional)
+  const WEATHER_CITY = "Belem,BR"; // use 'City,CountryCode' ou ajuste para lat/lon se preferir
 
-    async function loadEvents() {
-      const res = await fetch(SCRIPT_URL);
-      const events = await res.json();
+  const MEMBERS = [
+    {id:'rogério', name:'Rogério', color:'#60a5fa'},
+    {id:'ana', name:'Ana', color:'#f472b6'},
+    {id:'lucas', name:'Lucas', color:'#fbbf24'},
+    {id:'maria', name:'Maria', color:'#34d399'}
+  ];
 
-      const days = [[], [], []];
-      const today = new Date();
+  // ---------- UI bootstrapping ----------
+  const memberList = document.getElementById('memberList');
+  const peopleGrid = document.getElementById('peopleGrid');
+  MEMBERS.forEach(m=>{
+    const row = document.createElement('div'); row.className='member-row';
+    row.innerHTML = `<div style='width:40px;height:40px;border-radius:10px;background:${m.color};display:flex;align-items:center;justify-content:center;font-weight:700;color:#071426'>${m.name.charAt(0)}</div><div style='font-weight:700'>${m.name}</div><div style='margin-left:auto;color:var(--muted)'>0</div>`;
+    memberList.appendChild(row);
 
-      events.forEach(ev => {
-        const start = new Date(ev.start);
-        const diff = Math.floor((start - today) / (1000 * 60 * 60 * 24));
-        if (diff >= 0 && diff < 3) days[diff].push(ev);
+    // person card
+    const p = document.createElement('div'); p.className='person-card glass-card fade-in';
+    p.innerHTML = `<div class='person-title'><div style='width:44px;height:44px;border-radius:12px;background:${m.color};display:flex;align-items:center;justify-content:center;font-weight:700;color:#071426'>${m.name.charAt(0)}</div><div style='font-weight:700;margin-left:6px'>${m.name}</div></div><div class='periods'><div class='period' data-period='morning'></div><div class='period' data-period='afternoon'></div><div class='period' data-period='evening'></div></div>`;
+    peopleGrid.appendChild(p);
+  });
+
+  // datetime + auto theme based on hour
+  function updateDateTime(){
+    const now = new Date();
+    const fmt = now.toLocaleString('pt-BR', {weekday:'long', day:'2-digit', month:'long'} ) + ' • ' + now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+    document.getElementById('dateTime').innerText = fmt;
+    // auto dark: after 19h -> add dark style (we keep glass look)
+    const hour = now.getHours();
+    if(hour>=19 || hour<6) document.body.classList.add('dark'); else document.body.classList.remove('dark');
+  }
+  setInterval(updateDateTime,1000); updateDateTime();
+
+  // fetch weather (optional)
+  async function loadWeather(){
+    const chip = document.getElementById('weatherChip');
+    if(!OPENWEATHER_KEY){ chip.innerText = 'Clima: não configurado'; return; }
+    try{
+      // simple by city
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(WEATHER_CITY)}&units=metric&appid=${OPENWEATHER_KEY}&lang=pt_br`;
+      const r = await fetch(url); if(!r.ok) throw new Error('weather fetch failed');
+      const d = await r.json();
+      chip.innerHTML = `${Math.round(d.main.temp)}°C • ${d.weather[0].description}`;
+    }catch(e){ console.warn('weather',e); document.getElementById('weatherChip').innerText = 'Clima indisponível'; }
+  }
+  loadWeather();
+
+  // fetch calendar events from your Apps Script
+  async function loadEvents(){
+    const el = document.getElementById('eventsList');
+    try{
+      const res = await fetch(SCRIPT_URL,{cache:'no-store'});
+      if(!res.ok) throw new Error('Erro ao ler evento');
+      const data = await res.json();
+      renderEvents(data);
+    }catch(err){ console.error(err); el.innerHTML = '<div class="placeholder">Erro ao carregar eventos. Verifique a URL do Apps Script.</div>'; }
+  }
+
+  function renderEvents(events){
+    const list = document.getElementById('eventsList');
+    list.innerHTML = '';
+    if(!events || !events.length){ list.innerHTML = '<div class="placeholder">Nenhum evento nos próximos 3 dias.</div>'; return; }
+
+    // sort and map
+    const now = new Date();
+    events.sort((a,b)=> new Date(a.start) - new Date(b.start));
+    events.forEach(ev=>{
+      const start = new Date(ev.start);
+      const time = start.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+      const div = document.createElement('div'); div.className='event';
+      div.innerHTML = `<div class='left'><div style='width:36px;height:36px;border-radius:10px;background:linear-gradient(90deg,#7c3aed,#06b6d4);display:flex;align-items:center;justify-content:center;font-weight:700'>${ev.title.charAt(0).toUpperCase()}</div><div style='margin-left:8px'><div style='font-weight:700'>${ev.title}</div><div class='time'>${time}</div></div></div><div class='small'>${ev.location? ev.location : ''}</div>`;
+      list.appendChild(div);
+    });
+
+    // quick summary
+    const summary = document.getElementById('summary');
+    summary.innerHTML = `${events.length} evento(s) nos próximos 3 dias`;
+  }
+
+  // tasks (localStorage) and map into person cards
+  function loadLocalTasks(){
+    const tasks = JSON.parse(localStorage.getItem('sf-tasks')||'[]');
+    // clear counts
+    document.querySelectorAll('.member-row').forEach((r,i)=>{ r.querySelector('div:last-child').innerText = tasks.filter(t=>t.person===MEMBERS[i].id).length; });
+
+    // fill person cards
+    const cards = document.querySelectorAll('.person-card');
+    cards.forEach((card,idx)=>{
+      const personId = MEMBERS[idx].id;
+      const periods = ['morning','afternoon','evening'];
+      periods.forEach(p=>{ const el = card.querySelector(`[data-period='${p}']`); el.innerHTML = ''; });
+      const personTasks = tasks.filter(t=>t.person===personId);
+      personTasks.forEach(t=>{
+        const when = t.period || 'morning';
+        const el = card.querySelector(`[data-period='${when}']`);
+        const node = document.createElement('div'); node.style.padding='6px'; node.style.marginBottom='6px'; node.style.borderRadius='8px'; node.style.background='linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))';
+        node.innerHTML = `<div style='font-weight:700'>${t.title}</div><div class='small'>${t.note||''}</div>`;
+        el.appendChild(node);
       });
+    });
+  }
 
-      const columns = document.querySelectorAll('.column .events');
-      days.forEach((dayEvents, idx) => {
-        columns[idx].innerHTML = dayEvents.length
-          ? dayEvents.map(ev => `
-            <div class="event">
-              <div class="event-title">${ev.title}</div>
-              <div class="event-time">${new Date(ev.start).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}</div>
-            </div>`).join('')
-          : "<p>Nenhum evento.</p>";
-      });
-    }
+  // quick helpers to create a demo task if none exist
+  function ensureDemoTasks(){
+    const stored = JSON.parse(localStorage.getItem('sf-tasks')||'[]');
+    if(stored.length) return;
+    const demo = [
+      {title:'Lavar louça',person:'ana',period:'evening',note:''},
+      {title:'Estudar inglês',person:'lucas',period:'afternoon',note:''},
+      {title:'Reunião família',person:'rogério',period:'morning',note:''}
+    ];
+    localStorage.setItem('sf-tasks',JSON.stringify(demo));
+  }
 
-    loadEvents();
+  // modal handlers
+  document.getElementById('addTaskBtn').addEventListener('click',()=>{document.getElementById('modal').style.display='flex';});
+  document.getElementById('cancelTask').addEventListener('click',()=>{document.getElementById('modal').style.display='none';});
+  document.getElementById('saveTask').addEventListener('click',()=>{
+    const title = document.getElementById('tTitle').value.trim();
+    const person = document.getElementById('tPerson').value;
+    if(!title) return alert('Título obrigatório');
+    const arr = JSON.parse(localStorage.getItem('sf-tasks')||'[]');
+    arr.push({title,person,period:'morning',note:''});
+    localStorage.setItem('sf-tasks',JSON.stringify(arr));
+    document.getElementById('modal').style.display='none';
+    loadLocalTasks();
+  });
+
+  // refresh button
+  document.getElementById('refreshBtn').addEventListener('click',()=>{loadEvents(); loadLocalTasks(); loadWeather();});
+
+  // init
+  ensureDemoTasks(); loadLocalTasks(); loadEvents();
   </script>
 </body>
 </html>
