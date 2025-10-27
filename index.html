@@ -3,84 +3,71 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Skylight Familiar — v2 Glass</title>
+  <title>Skylight Familiar — v3 Real</title>
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
   <style>
     :root{
-      --bg-1: linear-gradient(180deg,#0f1724 0%, #071426 100%);
+      --bg:#f1f5f9;
+      --dark-bg:#071426;
       --glass: rgba(255,255,255,0.06);
-      --glass-2: rgba(255,255,255,0.04);
-      --card-radius: 18px;
-      --accent: linear-gradient(90deg,#7c3aed,#06b6d4);
-      --muted: #9aa4b2;
+      --card-radius:20px;
+      --muted:#9aa4b2;
+      --blue:#9ad4ff; /* pastel bases for columns */
+      --purple:#d9b8ff;
+      --yellow:#ffe29a;
+      --green:#b7f0d0;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
-      margin:0;
-      font-family: Inter, Poppins, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-      background: var(--bg-1);
-      color:#e6eef6;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      display:flex;flex-direction:column;align-items:center;padding:28px;
+      margin:0;font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial;background:linear-gradient(180deg,#0b1b2b 0%, #072031 100%);color:#e6eef6;display:flex;justify-content:center;padding:28px
     }
+    .wrap{width:100%;max-width:1400px}
 
-    /* Container */
-    .wrap{width:100%;max-width:1200px}
-
-    /* Header */
-    header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
     .brand{display:flex;align-items:center;gap:14px}
-    .logo{width:64px;height:64px;border-radius:14px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:20px;box-shadow:0 6px 18px rgba(124,58,237,0.18)}
-    h1{margin:0;font-size:20px}
-    .top-controls{display:flex;align-items:center;gap:10px}
-    .chip{background:var(--glass);padding:8px 12px;border-radius:999px;color:var(--muted);font-weight:600;font-size:13px}
-    .btn{background:linear-gradient(90deg,#06b6d4,#7c3aed);border:none;padding:8px 12px;border-radius:10px;color:#071426;font-weight:700;cursor:pointer}
+    .logo{width:76px;height:76px;border-radius:16px;background:linear-gradient(90deg,#7c3aed,#06b6d4);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:22px;box-shadow:0 10px 30px rgba(124,58,237,0.18)}
+    h1{margin:0;font-size:22px}
+    .header-right{display:flex;gap:12px;align-items:center}
+    .datetime{background:rgba(255,255,255,0.04);padding:10px 14px;border-radius:999px;color:var(--muted);font-weight:700}
+    .weather{background:rgba(255,255,255,0.04);padding:10px 14px;border-radius:999px;color:var(--muted);display:flex;gap:8px;align-items:center}
 
-    /* Dashboard grid */
-    .dashboard{display:grid;grid-template-columns:300px 1fr;gap:18px}
+    /* Main layout: people columns and sidebar */
+    .main{display:grid;grid-template-columns:1fr 360px;gap:18px}
 
-    /* Left column (sidebar) */
-    .left{display:flex;flex-direction:column;gap:12px}
-    .glass-card{background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));border-radius:var(--card-radius);padding:14px;backdrop-filter:blur(10px);box-shadow:0 6px 30px rgba(2,6,23,0.6)}
-    .profile{display:flex;gap:12px;align-items:center}
-    .avatar-lg{width:56px;height:56px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#071426;font-weight:800;background:linear-gradient(90deg,#ffd166,#ff9abc)}
-    .members{display:flex;flex-direction:column;gap:8px;margin-top:8px}
-    .member-row{display:flex;align-items:center;gap:10px;padding:8px;border-radius:10px;background:rgba(255,255,255,0.02)}
+    /* People board columns */
+    .board{display:flex;gap:12px}
+    .col{flex:1;display:flex;flex-direction:column;gap:12px}
+    .person{
+      border-radius:16px;padding:12px;background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));backdrop-filter:blur(8px);box-shadow:0 8px 30px rgba(2,6,23,0.6);min-height:350px;display:flex;flex-direction:column}
 
-    /* Right area */
-    .right{display:flex;flex-direction:column;gap:12px}
-    .panels{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-    .panel{padding:12px;border-radius:14px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));min-height:110px}
-    .panel h3{margin:0;font-size:14px;color:#cfe9ff}
-    .events{margin-top:8px;display:flex;flex-direction:column;gap:8px}
-    .event{display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:10px;background:rgba(255,255,255,0.02)}
-    .event .left{display:flex;gap:8px;align-items:center}
-    .event .time{font-size:13px;color:var(--muted)}
+    /* header inside column */
+    .person-head{display:flex;align-items:center;gap:10px}
+    .avatar{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#071426}
+    .name{font-weight:800}
+    .progress{margin-left:auto;background:rgba(255,255,255,0.03);padding:6px 10px;border-radius:999px;font-weight:700;color:var(--muted)}
 
-    /* columns by person */
-    .people{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px}
-    .person-card{padding:14px;border-radius:14px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);min-height:180px;display:flex;flex-direction:column}
-    .person-title{display:flex;align-items:center;gap:10px}
-    .person-title .dot{width:12px;height:12px;border-radius:50%}
-    .periods{display:flex;gap:8px;margin-top:10px}
-    .period{flex:1;padding:8px;border-radius:10px;background:rgba(255,255,255,0.01);min-height:60px}
+    /* tasks list style */
+    .task{margin-top:10px;padding:12px;border-radius:12px;background:white;color:#071426;display:flex;align-items:center;justify-content:space-between;box-shadow:0 6px 18px rgba(2,6,23,0.35)}
+    .task .meta{display:flex;align-items:center;gap:10px}
+    .task .title{font-weight:700}
+    .task .sub{font-size:13px;color:#40566a}
+    .check{width:28px;height:28px;border-radius:999px;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;cursor:pointer}
 
-    /* footer */
-    footer{margin-top:14px;color:var(--muted);font-size:13px}
+    /* rewards */
+    .rewards{display:flex;align-items:center;gap:8px;margin-top:10px}
+    .star{background:rgba(255,255,255,0.9);padding:6px;border-radius:8px;color:#071426;font-weight:800}
+
+    /* sidebar */
+    .sidebar{display:flex;flex-direction:column;gap:12px}
+    .card{border-radius:16px;padding:14px;background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));backdrop-filter:blur(8px);box-shadow:0 6px 24px rgba(2,6,23,0.6)}
+    .events-list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+    .ev{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:10px;background:rgba(255,255,255,0.02)}
+
+    footer{margin-top:14px;color:var(--muted);font-size:13px;text-align:center}
 
     /* responsive */
-    @media (max-width:1000px){.dashboard{grid-template-columns:1fr}.panels{grid-template-columns:repeat(2,1fr)}.people{grid-template-columns:repeat(2,1fr)}}
-    @media (max-width:600px){.panels{display:block}.people{display:block}}
-
-    /* small helpers */
-    .small{font-size:13px;color:var(--muted)}
-    .placeholder{color:var(--muted);font-size:13px}
-
-    /* animations */
-    .fade-in{animation:fadeIn .6s ease both}
-    @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    @media (max-width:1000px){.main{grid-template-columns:1fr}.board{flex-direction:column}.col{width:100%}}
 
   </style>
 </head>
@@ -91,231 +78,192 @@
         <div class="logo">SF</div>
         <div>
           <h1>Skylight Familiar</h1>
-          <div class="small">Painel familiar — privado • glass edition</div>
+          <div style="color:var(--muted);font-weight:600">Quadro de tarefas • v3 Real</div>
         </div>
       </div>
 
-      <div class="top-controls">
-        <div class="chip" id="dateTime">—</div>
-        <div class="chip" id="weatherChip">Carregando clima...</div>
-        <button class="btn" id="refreshBtn"><i class='bx bx-refresh'></i> Atualizar</button>
+      <div class="header-right">
+        <div class="datetime" id="dateTime">—</div>
+        <div class="weather" id="weatherChip"><i class='bx bx-sun'></i><span id="temp">—</span></div>
+        <div style="display:flex;gap:8px"><button class="btn" id="refreshBtn"><i class='bx bx-refresh'></i> Atualizar</button></div>
       </div>
     </header>
 
-    <div class="dashboard">
-      <div class="left">
-        <div class="glass-card profile">
-          <div class="avatar-lg" id="ownerAvatar">RJ</div>
-          <div>
-            <div style="font-weight:700">Rogério Jaste</div>
-            <div class="small">Administrador</div>
+    <div class="main">
+      <div>
+        <div class="board">
+          <!-- columns: Rogério / Ana / Lucas / Maria -->
+          <div class="col">
+            <div class="person" id="col-rogério">
+              <div class="person-head"><div class="avatar" style="background:linear-gradient(90deg,#9ad4ff,#60a5fa)">R</div><div><div class="name">Rogério</div><div class="small">Pai</div></div><div class="progress" id="prog-rogério">0/0</div></div>
+              <div id="tasks-rogério"></div>
+              <div class="rewards" id="stars-rogério"></div>
+            </div>
           </div>
-        </div>
 
-        <div class="glass-card">
-          <div style="font-weight:700">Membros</div>
-          <div class="members" id="memberList">
-            <!-- built dynamically -->
+          <div class="col">
+            <div class="person" id="col-ana">
+              <div class="person-head"><div class="avatar" style="background:linear-gradient(90deg,#f5c0d6,#ec4899)">A</div><div><div class="name">Ana</div><div class="small">Mãe</div></div><div class="progress" id="prog-ana">0/0</div></div>
+              <div id="tasks-ana"></div>
+              <div class="rewards" id="stars-ana"></div>
+            </div>
           </div>
-        </div>
 
-        <div class="glass-card">
-          <div style="font-weight:700">Ações rápidas</div>
-          <div style="display:flex;gap:8px;margin-top:10px">
-            <button class="btn" id="addTaskBtn"><i class='bx bx-plus'></i> Nova tarefa</button>
-            <button class="btn" id="openSettings"><i class='bx bx-cog'></i> Config</button>
+          <div class="col">
+            <div class="person" id="col-lucas">
+              <div class="person-head"><div class="avatar" style="background:linear-gradient(90deg,#fff0b3,#fbbf24)">L</div><div><div class="name">Lucas</div><div class="small">Filho</div></div><div class="progress" id="prog-lucas">0/0</div></div>
+              <div id="tasks-lucas"></div>
+              <div class="rewards" id="stars-lucas"></div>
+            </div>
           </div>
-        </div>
 
+          <div class="col">
+            <div class="person" id="col-maria">
+              <div class="person-head"><div class="avatar" style="background:linear-gradient(90deg,#bfffe0,#34d399)">M</div><div><div class="name">Maria</div><div class="small">Filha</div></div><div class="progress" id="prog-maria">0/0</div></div>
+              <div id="tasks-maria"></div>
+              <div class="rewards" id="stars-maria"></div>
+            </div>
+          </div>
+
+        </div>
       </div>
 
-      <div class="right">
-        <div class="panels">
-          <div class="panel fade-in">
-            <h3>Próximos eventos (3 dias)</h3>
-            <div class="events" id="eventsList">Carregando...</div>
-          </div>
-          <div class="panel fade-in">
-            <h3>Resumo rápido</h3>
-            <div class="small" id="summary">--</div>
-          </div>
-          <div class="panel fade-in">
-            <h3>Cardápio</h3>
-            <div class="small">Seg: Arroz &amp; Frango • Ter: Macarrão • Qua: Sopa</div>
+      <aside class="sidebar">
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center"><strong>Próximos eventos (3 dias)</strong><small class="small">Agenda</small></div>
+          <div class="events-list" id="eventsList">Carregando...</div>
+        </div>
+
+        <div class="card">
+          <strong>Resumo rápido</strong>
+          <div class="small" id="summary">--</div>
+        </div>
+
+        <div class="card">
+          <strong>Adicionar tarefa</strong>
+          <div style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
+            <input id="quickTitle" placeholder="Tarefa" style="padding:8px;border-radius:8px;border:none" />
+            <select id="quickPerson" style="padding:8px;border-radius:8px;border:none">
+              <option value="rogério">Rogério</option>
+              <option value="ana">Ana</option>
+              <option value="lucas">Lucas</option>
+              <option value="maria">Maria</option>
+            </select>
+            <div style="display:flex;gap:8px"><button class="btn" id="quickAdd">Adicionar</button><button class="btn" id="clearTasks">Limpar demo</button></div>
           </div>
         </div>
 
-        <div class="people" id="peopleGrid">
-          <!-- 4 person cards -->
-        </div>
-
-      </div>
+      </aside>
     </div>
 
-    <footer>Skylight Familiar • v2 Glass — Privado • Feito por você</footer>
-  </div>
-
-  <!-- small modal for add task -->
-  <div id="modal" style="display:none;position:fixed;inset:0;background:rgba(2,6,23,0.6);align-items:center;justify-content:center">
-    <div style="background:#071426;padding:18px;border-radius:12px;width:420px;max-width:96%">
-      <h3 style="margin-top:0;color:#e6eef6">Nova tarefa</h3>
-      <input id="tTitle" placeholder="Título" style="width:100%;padding:10px;border-radius:8px;border:none;margin-bottom:8px" />
-      <select id="tPerson" style="width:100%;padding:10px;border-radius:8px;border:none;margin-bottom:8px">
-        <option value="rogério">Rogério</option>
-        <option value="ana">Ana</option>
-        <option value="lucas">Lucas</option>
-        <option value="maria">Maria</option>
-      </select>
-      <div style="display:flex;justify-content:flex-end;gap:8px">
-        <button id="saveTask" class="btn">Salvar</button>
-        <button id="cancelTask" style="background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px;border-radius:8px;color:var(--muted)">Cancelar</button>
-      </div>
-    </div>
+    <footer>Skylight Familiar • v3 Real • Privado — feito por você</footer>
   </div>
 
   <script>
-  /* =========================== INSTRUÇÕES ===========================
-    1) Substitua SCRIPT_URL pelo URL do seu Google Apps Script (o endpoint /exec).
-    2) Para o clima: crie uma conta gratuita em https://openweathermap.org e cole a chave em OPENWEATHER_KEY.
-       (ou deixe vazio para ocultar o chip do clima)
-    ====================================================================*/
+    // CONFIG: replace with your Apps Script URL
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxLF3o5PHBKapu6UthIW8Oee-D8yLVQ58Jqi5hTloLayZS2-dAo4vx4VJaxRN3tyvg/exec";
 
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxLF3o5PHBKapu6UthIW8Oee-D8yLVQ58Jqi5hTloLayZS2-dAo4vx4VJaxRN3tyvg/exec"; // já preenchido por você
-  const OPENWEATHER_KEY = ""; // cole sua API key aqui (opcional)
-  const WEATHER_CITY = "Belem,BR"; // use 'City,CountryCode' ou ajuste para lat/lon se preferir
+    const MEMBERS = ['rogério','ana','lucas','maria'];
 
-  const MEMBERS = [
-    {id:'rogério', name:'Rogério', color:'#60a5fa'},
-    {id:'ana', name:'Ana', color:'#f472b6'},
-    {id:'lucas', name:'Lucas', color:'#fbbf24'},
-    {id:'maria', name:'Maria', color:'#34d399'}
-  ];
+    // date/time and auto-theme
+    function updateDate(){
+      const now = new Date();
+      const fmt = now.toLocaleString('pt-BR', {weekday:'long', day:'2-digit', month:'long'}) + ' • ' + now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+      document.getElementById('dateTime').innerText = fmt;
+      requestAnimationFrame(()=>{});
+    }
+    setInterval(updateDate,1000); updateDate();
 
-  // ---------- UI bootstrapping ----------
-  const memberList = document.getElementById('memberList');
-  const peopleGrid = document.getElementById('peopleGrid');
-  MEMBERS.forEach(m=>{
-    const row = document.createElement('div'); row.className='member-row';
-    row.innerHTML = `<div style='width:40px;height:40px;border-radius:10px;background:${m.color};display:flex;align-items:center;justify-content:center;font-weight:700;color:#071426'>${m.name.charAt(0)}</div><div style='font-weight:700'>${m.name}</div><div style='margin-left:auto;color:var(--muted)'>0</div>`;
-    memberList.appendChild(row);
+    // fake weather (demo): we'll show basic icon/temperature; user can configure API key later
+    function setDemoWeather(){ document.getElementById('temp').innerText = '25°C'; }
+    setDemoWeather();
 
-    // person card
-    const p = document.createElement('div'); p.className='person-card glass-card fade-in';
-    p.innerHTML = `<div class='person-title'><div style='width:44px;height:44px;border-radius:12px;background:${m.color};display:flex;align-items:center;justify-content:center;font-weight:700;color:#071426'>${m.name.charAt(0)}</div><div style='font-weight:700;margin-left:6px'>${m.name}</div></div><div class='periods'><div class='period' data-period='morning'></div><div class='period' data-period='afternoon'></div><div class='period' data-period='evening'></div></div>`;
-    peopleGrid.appendChild(p);
-  });
+    // load events from Apps Script
+    async function loadEvents(){
+      const el = document.getElementById('eventsList');
+      try{
+        const res = await fetch(SCRIPT_URL,{cache:'no-store'});
+        if(!res.ok) throw new Error('Erro');
+        const data = await res.json();
+        renderEvents(data);
+      }catch(e){ el.innerHTML = '<div class="small">Não foi possível carregar eventos.</div>'; console.warn(e); }
+    }
 
-  // datetime + auto theme based on hour
-  function updateDateTime(){
-    const now = new Date();
-    const fmt = now.toLocaleString('pt-BR', {weekday:'long', day:'2-digit', month:'long'} ) + ' • ' + now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-    document.getElementById('dateTime').innerText = fmt;
-    // auto dark: after 19h -> add dark style (we keep glass look)
-    const hour = now.getHours();
-    if(hour>=19 || hour<6) document.body.classList.add('dark'); else document.body.classList.remove('dark');
-  }
-  setInterval(updateDateTime,1000); updateDateTime();
-
-  // fetch weather (optional)
-  async function loadWeather(){
-    const chip = document.getElementById('weatherChip');
-    if(!OPENWEATHER_KEY){ chip.innerText = 'Clima: não configurado'; return; }
-    try{
-      // simple by city
-      const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(WEATHER_CITY)}&units=metric&appid=${OPENWEATHER_KEY}&lang=pt_br`;
-      const r = await fetch(url); if(!r.ok) throw new Error('weather fetch failed');
-      const d = await r.json();
-      chip.innerHTML = `${Math.round(d.main.temp)}°C • ${d.weather[0].description}`;
-    }catch(e){ console.warn('weather',e); document.getElementById('weatherChip').innerText = 'Clima indisponível'; }
-  }
-  loadWeather();
-
-  // fetch calendar events from your Apps Script
-  async function loadEvents(){
-    const el = document.getElementById('eventsList');
-    try{
-      const res = await fetch(SCRIPT_URL,{cache:'no-store'});
-      if(!res.ok) throw new Error('Erro ao ler evento');
-      const data = await res.json();
-      renderEvents(data);
-    }catch(err){ console.error(err); el.innerHTML = '<div class="placeholder">Erro ao carregar eventos. Verifique a URL do Apps Script.</div>'; }
-  }
-
-  function renderEvents(events){
-    const list = document.getElementById('eventsList');
-    list.innerHTML = '';
-    if(!events || !events.length){ list.innerHTML = '<div class="placeholder">Nenhum evento nos próximos 3 dias.</div>'; return; }
-
-    // sort and map
-    const now = new Date();
-    events.sort((a,b)=> new Date(a.start) - new Date(b.start));
-    events.forEach(ev=>{
-      const start = new Date(ev.start);
-      const time = start.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-      const div = document.createElement('div'); div.className='event';
-      div.innerHTML = `<div class='left'><div style='width:36px;height:36px;border-radius:10px;background:linear-gradient(90deg,#7c3aed,#06b6d4);display:flex;align-items:center;justify-content:center;font-weight:700'>${ev.title.charAt(0).toUpperCase()}</div><div style='margin-left:8px'><div style='font-weight:700'>${ev.title}</div><div class='time'>${time}</div></div></div><div class='small'>${ev.location? ev.location : ''}</div>`;
-      list.appendChild(div);
-    });
-
-    // quick summary
-    const summary = document.getElementById('summary');
-    summary.innerHTML = `${events.length} evento(s) nos próximos 3 dias`;
-  }
-
-  // tasks (localStorage) and map into person cards
-  function loadLocalTasks(){
-    const tasks = JSON.parse(localStorage.getItem('sf-tasks')||'[]');
-    // clear counts
-    document.querySelectorAll('.member-row').forEach((r,i)=>{ r.querySelector('div:last-child').innerText = tasks.filter(t=>t.person===MEMBERS[i].id).length; });
-
-    // fill person cards
-    const cards = document.querySelectorAll('.person-card');
-    cards.forEach((card,idx)=>{
-      const personId = MEMBERS[idx].id;
-      const periods = ['morning','afternoon','evening'];
-      periods.forEach(p=>{ const el = card.querySelector(`[data-period='${p}']`); el.innerHTML = ''; });
-      const personTasks = tasks.filter(t=>t.person===personId);
-      personTasks.forEach(t=>{
-        const when = t.period || 'morning';
-        const el = card.querySelector(`[data-period='${when}']`);
-        const node = document.createElement('div'); node.style.padding='6px'; node.style.marginBottom='6px'; node.style.borderRadius='8px'; node.style.background='linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))';
-        node.innerHTML = `<div style='font-weight:700'>${t.title}</div><div class='small'>${t.note||''}</div>`;
-        el.appendChild(node);
+    function renderEvents(events){
+      const el = document.getElementById('eventsList'); el.innerHTML='';
+      if(!events || !events.length){ el.innerHTML = '<div class="small">Sem eventos nos próximos 3 dias.</div>'; return; }
+      events.sort((a,b)=> new Date(a.start)-new Date(b.start));
+      events.forEach(ev=>{
+        const start = new Date(ev.start);
+        const time = start.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+        const row = document.createElement('div'); row.className='ev';
+        row.innerHTML = `<div><div style="font-weight:700">${ev.title}</div><div class='small'>${time} • ${ev.location||''}</div></div><div class='small'>${ev.description? '📋':''}</div>`;
+        el.appendChild(row);
       });
+      document.getElementById('summary').innerText = `${events.length} evento(s) nos próximos 3 dias`;
+    }
+
+    // tasks in localStorage under key sf-tasks
+    function ensureDemo(){
+      const key = 'sf-tasks';
+      const cur = JSON.parse(localStorage.getItem(key)||'[]');
+      if(cur.length) return;
+      const demo = [
+        {title:'Lavar louça',person:'ana',period:'evening',done:false,stars:1},
+        {title:'Levar Lucas ao treino',person:'rogério',period:'afternoon',done:false,stars:2},
+        {title:'Arrumar quarto',person:'lucas',period:'morning',done:false,stars:1},
+        {title:'Preparar lanche',person:'maria',period:'morning',done:false,stars:1}
+      ];
+      localStorage.setItem(key,JSON.stringify(demo));
+    }
+
+    function loadTasks(){
+      const key = 'sf-tasks';
+      const tasks = JSON.parse(localStorage.getItem(key)||'[]');
+      // clear containers
+      MEMBERS.forEach(m=>{ document.getElementById('tasks-'+m).innerHTML=''; document.getElementById('stars-'+m).innerHTML=''; });
+
+      MEMBERS.forEach(m=>{
+        const personTasks = tasks.filter(t=>t.person===m);
+        const total = personTasks.length; const done = personTasks.filter(t=>t.done).length;
+        document.getElementById('prog-'+m).innerText = `${done}/${total}`;
+
+        // render tasks top-to-bottom
+        personTasks.forEach((t,i)=>{
+          const node = document.createElement('div'); node.className='task';
+          const title = document.createElement('div'); title.className='meta';
+          title.innerHTML = `<div style='width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,0.95);display:flex;align-items:center;justify-content:center;font-weight:800;color:#071426'>${t.title.charAt(0).toUpperCase()}</div><div style='margin-left:10px'><div class='title'>${t.title}</div><div class='sub'>${t.period || 'Daily'}</div></div>`;
+          const ch = document.createElement('div'); ch.className='check'; ch.innerHTML = t.done ? "<i class='bx bx-check-circle' style='color:green'></i>" : "";
+          ch.addEventListener('click',()=>{ toggleDone(m,t.title); });
+          node.appendChild(title); node.appendChild(ch);
+          document.getElementById('tasks-'+m).appendChild(node);
+        });
+
+        // stars (rewards) auto-calculated: 1 star per done task (cap at 10)
+        const starsCount = Math.min(10, personTasks.filter(t=>t.done).reduce((s,t)=>s+(t.stars||1),0));
+        for(let s=0;s<starsCount;s++){ const el = document.createElement('div'); el.className='star'; el.textContent='★'; document.getElementById('stars-'+m).appendChild(el);} 
+      });
+    }
+
+    function toggleDone(person,title){
+      const key='sf-tasks'; const tasks = JSON.parse(localStorage.getItem(key)||'[]');
+      const idx = tasks.findIndex(t=>t.person===person && t.title===title);
+      if(idx>=0){ tasks[idx].done = !tasks[idx].done; localStorage.setItem(key,JSON.stringify(tasks)); loadTasks(); }
+    }
+
+    // quick add
+    document.getElementById('quickAdd').addEventListener('click',()=>{
+      const title = document.getElementById('quickTitle').value.trim(); const person = document.getElementById('quickPerson').value;
+      if(!title) return alert('Digite título');
+      const key='sf-tasks'; const tasks = JSON.parse(localStorage.getItem(key)||'[]'); tasks.push({title,person,period:'daily',done:false,stars:1}); localStorage.setItem(key,JSON.stringify(tasks)); document.getElementById('quickTitle').value=''; loadTasks();
     });
-  }
 
-  // quick helpers to create a demo task if none exist
-  function ensureDemoTasks(){
-    const stored = JSON.parse(localStorage.getItem('sf-tasks')||'[]');
-    if(stored.length) return;
-    const demo = [
-      {title:'Lavar louça',person:'ana',period:'evening',note:''},
-      {title:'Estudar inglês',person:'lucas',period:'afternoon',note:''},
-      {title:'Reunião família',person:'rogério',period:'morning',note:''}
-    ];
-    localStorage.setItem('sf-tasks',JSON.stringify(demo));
-  }
+    document.getElementById('clearTasks').addEventListener('click',()=>{ localStorage.removeItem('sf-tasks'); ensureDemo(); loadTasks(); });
 
-  // modal handlers
-  document.getElementById('addTaskBtn').addEventListener('click',()=>{document.getElementById('modal').style.display='flex';});
-  document.getElementById('cancelTask').addEventListener('click',()=>{document.getElementById('modal').style.display='none';});
-  document.getElementById('saveTask').addEventListener('click',()=>{
-    const title = document.getElementById('tTitle').value.trim();
-    const person = document.getElementById('tPerson').value;
-    if(!title) return alert('Título obrigatório');
-    const arr = JSON.parse(localStorage.getItem('sf-tasks')||'[]');
-    arr.push({title,person,period:'morning',note:''});
-    localStorage.setItem('sf-tasks',JSON.stringify(arr));
-    document.getElementById('modal').style.display='none';
-    loadLocalTasks();
-  });
+    // init
+    ensureDemo(); loadTasks(); loadEvents();
+    document.getElementById('refreshBtn').addEventListener('click',()=>{ loadEvents(); loadTasks(); });
 
-  // refresh button
-  document.getElementById('refreshBtn').addEventListener('click',()=>{loadEvents(); loadLocalTasks(); loadWeather();});
-
-  // init
-  ensureDemoTasks(); loadLocalTasks(); loadEvents();
   </script>
 </body>
 </html>
